@@ -58,7 +58,8 @@ sql "$old" "
     MASTER_HOST = '$new',
     MASTER_USER = '$REPL_USER',
     MASTER_PASSWORD = '$REPL_PW',
-    MASTER_USE_GTID = slave_pos;
+    MASTER_USE_GTID = slave_pos,
+    MASTER_SSL = 0;
   START REPLICA;
 "
 sleep 2

@@ -17,13 +17,15 @@ step "Restaurando no green sem gravar no binlog dele"
 } | docker compose exec -T green mariadb -uroot -p"$ROOT_PW"
 
 step "Ligando a replicação blue -> green a partir de $gtid"
+# MASTER_SSL = 0: a partir do 11.x a réplica exige TLS por padrão e o blue (10.6) não tem certificado
 sql green "
   SET GLOBAL gtid_slave_pos = '$gtid';
   CHANGE MASTER TO
     MASTER_HOST = 'blue',
     MASTER_USER = '$REPL_USER',
     MASTER_PASSWORD = '$REPL_PW',
-    MASTER_USE_GTID = slave_pos;
+    MASTER_USE_GTID = slave_pos,
+    MASTER_SSL = 0;
   START REPLICA;
 "
 sleep 2
