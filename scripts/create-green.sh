@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-# Copia os dados do blue para o green e liga a replicação blue -> green via GTID
+# Copia os dados do blue para o green e liga a replicação blue -> green via GTID.
+# Pode ser executado de novo: qualquer replicação anterior no green é descartada antes da cópia.
 source "$(dirname "$0")/lib.sh"
 mkdir -p .work
+
+step "Descartando replicação anterior no green (se houver)"
+sql green "STOP REPLICA; RESET REPLICA ALL"
 
 step "Gerando dump consistente do blue (sem lock, com a posição GTID)"
 docker compose exec -T blue mariadb-dump -uroot -p"$ROOT_PW" \
@@ -17,14 +21,13 @@ step "Restaurando no green sem gravar no binlog dele"
 } | docker compose exec -T green mariadb -uroot -p"$ROOT_PW"
 
 step "Ligando a replicação blue -> green a partir de $gtid"
-# MASTER_SSL = 0: a partir do 11.x a réplica exige TLS por padrão e o blue (10.6) não tem certificado
 sql green "
   SET GLOBAL gtid_slave_pos = '$gtid';
   CHANGE MASTER TO
     MASTER_HOST = 'blue',
     MASTER_USER = '$REPL_USER',
     MASTER_PASSWORD = '$REPL_PW',
-    MASTER_USE_GTID = slave_pos,
+    MASTER_USE_GTID = slave_pos;
     MASTER_SSL = 0;
   START REPLICA;
 "
