@@ -9,6 +9,6 @@ sql blue "
     source     VARCHAR(64) NOT NULL,
     created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
   );
-  INSERT INTO lab.writes (seq, source) SELECT seq, 'seed' FROM seq_1_to_100000;
+  INSERT INTO lab.writes (seq, source) SELECT seq, 'seed' FROM lab.seq_1_to_100000;
 "
 sql blue "SELECT COUNT(*) AS linhas, @@gtid_binlog_pos AS gtid FROM lab.writes"
