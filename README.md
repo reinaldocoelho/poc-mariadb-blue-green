@@ -2,7 +2,7 @@
 
 Laboratório de **Blue/Green Deployment com MariaDB**: atualização de versão (10.6 → 11.8) com replicação GTID, controle de lag, troca por DNS e rollback, com o mínimo de tempo sem escrita.
 
-> A explicação completa de cada passo está no artigo (em breve no [dev.to](https://dev.to/reinaldocoelho)).
+> A explicação completa de cada passo está no artigo [dev.to](https://dev.to/reinaldocoelho/bluegreen-deployment-no-mariadb-atualizando-o-banco-com-quase-zero-downtime-33dm).
 
 ## Componentes
 
